@@ -8,9 +8,9 @@ Created on Wed Mar 30 08:05:34 2022
 import pandas as pd
 import requests
 
-api_key = 'e742e1b74aa082782e9c1af7f30de1ef'
+api_key = 'x'
 stock = input('Enter Ticker Symbol (uppercase): ')
-rf_rate = input('Enter Risk-Free Rate (in Decimals): ')
+# rf_rate = input('Enter Risk-Free Rate (in Decimals): ')
 # date = input('Enter date for risk-free rate(YYY-MM-DD): ')
 
 #%%
@@ -45,30 +45,38 @@ def get_financial_growth(stock):
     
     return financial_growth
 
-def get_market_risk_premium(stock):
-    market_risk_premium = requests.get(f"https://financialmodelingprep.com/api/v4/market_risk_premium?apikey={api_key}")
-    market_risk_premium = market_risk_premium.json()
+# def get_market_risk_premium(stock):
+#     market_risk_premium = requests.get(f"https://financialmodelingprep.com/api/v4/market_risk_premium?apikey={api_key}")
+#     market_risk_premium = market_risk_premium.json()
     
-    return market_risk_premium
+#     return market_risk_premium
 
-def get_risk_free_rate(stock):
-    risk_free_rate = requests.get(f"https://financialmodelingprep.com/api/v4/treasury?from=2022-01-01&to={date}&apikey={api_key}")
-    risk_free_rate = risk_free_rate.json()
+# def get_risk_free_rate(stock):
+#     risk_free_rate = requests.get(f"https://financialmodelingprep.com/api/v4/treasury?from=2022-01-01&to={date}&apikey={api_key}")
+#     risk_free_rate = risk_free_rate.json()
     
-    return risk_free_rate
+#     return risk_free_rate
 
 
 #%% Get Financials
 
-income_statement = pd.DataFrame(get_income_statement(stock)).set_index('date').T
-balance_sheet = pd.DataFrame(get_balance_sheet(stock)).set_index('date').T
-cash_flow = pd.DataFrame(get_cash_flow(stock)).set_index('date').T
 
-financial_growth = pd.DataFrame(get_financial_growth(stock)).set_index('date').T
-dcf = pd.DataFrame(get_dcf(stock))
+income_statement = get_income_statement(stock)
+income_statement = pd.DataFrame.from_dict(income_statement).set_index('date').T
 
+balance_sheet = get_balance_sheet(stock)
+balance_sheet = pd.DataFrame.from_dict(balance_sheet).set_index('date').T
 
+cash_flow = get_cash_flow(stock)
+cash_flow = pd.DataFrame.from_dict(cash_flow).set_index('date').T
 
+financial_growth = get_financial_growth(stock)
+financial_growth = pd.DataFrame.from_dict(financial_growth).set_index('date').T
+
+dcf = get_dcf(stock)
+dcf = pd.DataFrame.from_dict(dcf).set_index('date').T
+
+# # type(get_income_statement(stock))
 
 
 #%% Some Quick Metrics
@@ -77,8 +85,8 @@ dcf = pd.DataFrame(get_dcf(stock))
 #EBIT = Gross Profit - Operating Expensis
 #Capital Employed = Total Assets - Current Liabilities
 
-ebit = income_statement.loc['grossProfit'] - income_statement.loc['operatingExpenses']
-cap_employed = balance_sheet.loc['totalAssets'] - balance_sheet.loc['totalCurrentLiabilities']
-roce = ebit/cap_employed
+# ebit = income_statement.loc['grossProfit'] - income_statement.loc['operatingExpenses']
+# cap_employed = balance_sheet.loc['totalAssets'] - balance_sheet.loc['totalCurrentLiabilities']
+# roce = ebit/cap_employed
 
-print(roce)
+# print(roce)
