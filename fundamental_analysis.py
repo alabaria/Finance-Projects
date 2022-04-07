@@ -85,8 +85,8 @@ dcf = pd.DataFrame.from_dict(dcf).set_index('date').T
 #EBIT = Gross Profit - Operating Expensis
 #Capital Employed = Total Assets - Current Liabilities
 
-# ebit = income_statement.loc['grossProfit'] - income_statement.loc['operatingExpenses']
-# cap_employed = balance_sheet.loc['totalAssets'] - balance_sheet.loc['totalCurrentLiabilities']
-# roce = ebit/cap_employed
+ebit = income_statement.loc['grossProfit'] - income_statement.loc['operatingExpenses']
+cap_employed = balance_sheet.loc['totalAssets'] - balance_sheet.loc['totalCurrentLiabilities']
+roce = ebit/cap_employed
 
 # print(roce)
