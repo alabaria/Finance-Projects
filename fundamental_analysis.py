@@ -246,8 +246,8 @@ metrics_df = metrics_df.join(de)
 ebitda = income_statement['ebitda']
 ebitda_ttm = income_statement_q['ebitda'].iloc[:4].sum()
 
-tax_expense = income_statement['incomeTaxExpense']
-tax_expense_ttm = income_statement_q['incomeTaxExpense'].iloc[:4].sum()
+tax_expense = income_statement['interestExpense']
+tax_expense_ttm = income_statement_q['interestExpense'].iloc[:4].sum()
 
 
 ic = pd.DataFrame(ebitda/tax_expense)
