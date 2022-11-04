@@ -92,8 +92,8 @@ metrics_df = roce
 ### FCF Yield
 ## FMP already has this calculated
 
-fcf = cash_flow['operatingCashFlow'] - cash_flow['capitalExpenditure']
-fcf_q = cash_flow_q['operatingCashFlow'].iloc[:4].sum() - cash_flow_q['capitalExpenditure'].iloc[:4].sum()
+fcf = cash_flow['operatingCashFlow'] + cash_flow['capitalExpenditure']
+fcf_q = cash_flow_q['operatingCashFlow'].iloc[:4].sum() + cash_flow_q['capitalExpenditure'].iloc[:4].sum()
 
 fcf_df = pd.DataFrame(data=fcf)
 fcf_df = fcf_df.rename(columns={0:'fcf'})
@@ -353,8 +353,9 @@ metrics_df['fcf_growth'] =  metrics_df['fcf'].pct_change(-1)*100
 metrics_df['fcf_growth_5_yr'] =  metrics_df['fcf'].pct_change(-5)*100
 metrics_df['fcf_growth_3_yr'] =  metrics_df['fcf'].pct_change(-3)*100
 metrics_df['fcf_per_share'] = metrics_df['fcf']/shares_outstanding.numberOfShares
+metrics_df['fcf_per_share_growth'] = metrics_df['fcf_per_share'].pct_change(-1)*100
 
-fcf_growth_df = metrics_df[['fcf','fcf_per_share','fcf_growth','fcf_growth_3_yr','fcf_growth_5_yr']]
+fcf_growth_df = metrics_df[['fcf','fcf_per_share','fcf_per_share_growth','fcf_growth','fcf_growth_3_yr','fcf_growth_5_yr']]
 
 #historic averages
 
