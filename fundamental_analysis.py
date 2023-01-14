@@ -127,9 +127,9 @@ metrics_df = metrics_df.join(fcf_yield)
 
 
 ### Cash Conversion
-cash_conversion = pd.DataFrame(cash_flow['freeCashFlow']/income_statement['netIncome'], columns=['cash_conversion']).sort_index(ascending=False)
+cash_conversion = pd.DataFrame(cash_flow['operatingCashFlow']/income_statement['netIncome'], columns=['cash_conversion']).sort_index(ascending=False)
 
-cash_conversion_ttm =  pd.Series(data=(cash_flow_q['freeCashFlow'].iloc[:4].sum()/income_statement_q['netIncome'].iloc[:4].sum()))
+cash_conversion_ttm =  pd.Series(data=(cash_flow_q['operatingCashFlow'].iloc[:4].sum()/income_statement_q['netIncome'].iloc[:4].sum()))
 cash_conversion_ttm = cash_conversion_ttm.rename('cash_conversion')
 cash_conversion_ttm = pd.DataFrame(cash_conversion_ttm)
 cash_conversion_ttm = cash_conversion_ttm.set_axis(['ttm'], axis='index')
@@ -328,9 +328,9 @@ metrics_df = metrics_df.join(oi)
 
 
 ### Dividend Coverage fcf/dividendspaid
-dc = pd.DataFrame(fcf/(cash_flow['dividendsPaid']*-1),columns=['dividend_coverage'])
+dc = pd.DataFrame(income_statement['netIncome']/(cash_flow['dividendsPaid']*-1),columns=['dividend_coverage'])
 
-dc_ttm = pd.Series(fcf_q/(cash_flow_q['dividendsPaid'][:4].sum()*-1))
+dc_ttm = pd.Series(income_statement_q['netIncome'].iloc[:4].sum()/(cash_flow_q['dividendsPaid'].iloc[:4].sum()*-1))
 dc_ttm = dc_ttm.rename('dividend_coverage')
 dc_ttm = pd.DataFrame(dc_ttm)
 dc_ttm = dc_ttm.set_axis(['ttm'], axis='index')
