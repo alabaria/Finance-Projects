@@ -50,12 +50,12 @@ metrics = pd.DataFrame.from_dict(metrics).set_index('date').head(10)
 #%% Assumptions
 
 ##Assumptions for DCF
-required_rate = 0.09
+required_rate = 0.08
 perpetual_growth_rate = 0.025
 
 #calculating average free cash flow growth over 10 years to get fcf_growth_rate
 
-fcf_growth_rate = 0.1
+fcf_growth_rate = 0.05
 
 # fcf_growth_rate = metrics_df['fcf_growth'][:5].mean()/100
 
@@ -82,7 +82,7 @@ fcf_avg_5 = metrics_df['fcf'][0:5].mean()
 
 #%% Calculations
 
-fcf_list = metrics_df['fcf'][0:10].tolist()
+fcf_list = metrics_df['fcf_adjusted'][0:10].tolist()
 
 future_fcf =[]
 discount_factor= []
@@ -102,12 +102,12 @@ for i in range (0, len(years)) :
     discounted_future_fcf.insert(0,future_fcf[i]/discount_factor[i])
 
 
-discounted_terminal_value = terminal_value/(1+required_rate)**4
+discounted_terminal_value = terminal_value/(1+required_rate)**10
 discounted_future_fcf.insert(0,discounted_terminal_value)
 
 todays_value = sum(discounted_future_fcf)
 
-fair_value = todays_value/ev.numberOfShares[0]
+fair_value = todays_value/shares_outstanding_q['numberOfShares'].values[0]
 
 
 print("The fair value of {} according to DCF is {}".format(stock,round(fair_value,2)))

@@ -108,6 +108,26 @@ fcf_df = pd.concat([fcf_q_df,fcf_df])
 
 metrics_df = metrics_df.join(fcf_df)
 
+
+### FCF adjusted for stock-based compensation
+fcf_stock_comp_adjusted = fcf - cash_flow.stockBasedCompensation
+fcf_stock_comp_adjusted_q = fcf_q - cash_flow_q.stockBasedCompensation.iloc[:4].sum()
+
+fcf_stock_comp_adjusted_df = pd.DataFrame(data=fcf_stock_comp_adjusted)
+fcf_stock_comp_adjusted_df = fcf_stock_comp_adjusted_df.rename(columns={0:'fcf_adjusted'})
+
+fcf_stock_comp_adjusted_q_df = pd.Series(fcf_stock_comp_adjusted_q)
+
+fcf_stock_comp_adjusted_q_df = pd.DataFrame(data=fcf_stock_comp_adjusted_q_df)
+fcf_stock_comp_adjusted_q_df = fcf_stock_comp_adjusted_q_df.rename(columns={0:'fcf_adjusted'})
+fcf_stock_comp_adjusted_q_df = fcf_stock_comp_adjusted_q_df.set_axis(['ttm'], axis='index')
+
+fcf_stock_comp_adjusted_df = pd.concat([fcf_stock_comp_adjusted_q_df,fcf_stock_comp_adjusted_df])
+
+metrics_df = metrics_df.join(fcf_stock_comp_adjusted_df)
+
+
+
 enterprise_value = ev['enterpriseValue']
 enterprise_value_q = ev_q['enterpriseValue'].iloc[0]
 
@@ -124,6 +144,27 @@ fcf_yield_ttm = fcf_yield_ttm.set_axis(['ttm'], axis='index')
 fcf_yield = pd.concat([fcf_yield_ttm,fcf_yield])*100
 
 metrics_df = metrics_df.join(fcf_yield)
+
+
+###FCF Yield Adjusted for Stock-based compensation
+fcf_yield_adjusted = fcf_stock_comp_adjusted/enterprise_value
+fcf_yield_adjusted = pd.DataFrame(data=fcf_yield_adjusted)
+fcf_yield_adjusted = fcf_yield_adjusted.rename(columns={0:'fcf_yield_adjusted'})
+
+fcf_yield_adjusted_ttm = pd.Series(fcf_stock_comp_adjusted_q/enterprise_value_q)
+
+fcf_yield_adjusted_ttm = pd.DataFrame(data=fcf_yield_adjusted_ttm)
+fcf_yield_adjusted_ttm = fcf_yield_adjusted_ttm.rename(columns={0:'fcf_yield_adjusted'})
+fcf_yield_adjusted_ttm = fcf_yield_adjusted_ttm.set_axis(['ttm'], axis='index')
+fcf_yield_adjusted = pd.concat([fcf_yield_adjusted_ttm,fcf_yield_adjusted])*100
+
+metrics_df = metrics_df.join(fcf_yield_adjusted)
+
+
+
+
+
+
 
 
 ### Cash Conversion
@@ -355,11 +396,21 @@ metrics_df['fcf_growth_3_yr'] =  metrics_df['fcf'].pct_change(-3)*100
 metrics_df['fcf_per_share'] = metrics_df['fcf']/shares_outstanding.numberOfShares
 metrics_df['fcf_per_share_growth'] = metrics_df['fcf_per_share'].pct_change(-1)*100
 
+
+metrics_df['fcf_adjusted_growth'] =  metrics_df['fcf_adjusted'].pct_change(-1)*100
+metrics_df['fcf_adjusted_growth_5_yr'] =  metrics_df['fcf_adjusted'].pct_change(-5)*100
+metrics_df['fcf_adjusted_growth_3_yr'] =  metrics_df['fcf_adjusted'].pct_change(-3)*100
+metrics_df['fcf_adjusted_per_share'] = metrics_df['fcf_adjusted']/shares_outstanding.numberOfShares
+metrics_df['fcf_adjusted_per_share_growth'] = metrics_df['fcf_adjusted_per_share'].pct_change(-1)*100
+
+
 fcf_growth_df = metrics_df[['fcf','fcf_per_share','fcf_per_share_growth','fcf_growth','fcf_growth_3_yr','fcf_growth_5_yr']]
+fcf_growth_adjusted_df = metrics_df[['fcf_adjusted','fcf_adjusted_per_share','fcf_adjusted_per_share_growth','fcf_adjusted_growth','fcf_adjusted_growth_3_yr','fcf_adjusted_growth_5_yr']]
+
 
 #historic averages
 
-cols = ['roce', 'fcf_yield', 'cash_conversion', 'dividend_coverage', 'croci', 'roic' ,\
+cols = ['roce', 'fcf_yield','fcf_yield_adjusted', 'cash_conversion', 'dividend_coverage', 'croci', 'roic' ,\
         'interest_coverage' , 'pe' , 'gross_profit_margin' , 'profit_margin','operating_margin']
 
 
@@ -389,9 +440,14 @@ cols = ['fcf_growth', 'fcf_growth_3_yr', 'fcf_growth_5_yr']
 fcf_growth_df[cols] = fcf_growth_df[cols].round(2)
 fcf_growth_df['fcf'] = (fcf_growth_df['fcf']/1000000000).apply(lambda x: '${:,.2f}B'.format(x))
 
+cols = ['fcf_adjusted_growth', 'fcf_adjusted_growth_3_yr', 'fcf_adjusted_growth_5_yr']
+fcf_growth_adjusted_df[cols] = fcf_growth_adjusted_df[cols].round(2)
+fcf_growth_adjusted_df['fcf_adjusted'] = (fcf_growth_adjusted_df['fcf_adjusted']/1000000000).apply(lambda x: '${:,.2f}B'.format(x))
+
 # income_fcf_metrics = income_analysis.join(fcf_growth_df)
 
 print(avg_metrics_df)
 print(fcf_growth_df)
+print(fcf_growth_adjusted_df)
 # print(income_analysis)
 
