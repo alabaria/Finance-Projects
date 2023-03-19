@@ -66,12 +66,15 @@ metrics_ttm = metrics_ttm.set_axis(['ttm'], axis='index')
 
 #%%% Important Metrics
 
+#Calculating ebit: ebtida - depreciation and amortization
 ebit = income_statement['ebitda'] - cash_flow['depreciationAndAmortization']
 ebit_ttm = income_statement_q['ebitda'].iloc[:4].sum() - cash_flow['depreciationAndAmortization'].iloc[:4].sum()
 
+#Capital Employed = Total Assets - Current Liabilities
 cap_employed = balance_sheet['totalAssets'] - balance_sheet['totalCurrentLiabilities']
 cap_employed_q = balance_sheet_q['totalAssets'].iloc[0] - balance_sheet_q['totalCurrentLiabilities'].iloc[0]
 
+#ROCE = Ebit/Capital Employed
 roce = ebit/cap_employed
 
 
